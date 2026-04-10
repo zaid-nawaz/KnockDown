@@ -1,5 +1,10 @@
 import express from "express";
 import http from 'http';
+import { productListRouter } from "./routes/productList.js";
+import { productRouter } from "./routes/product.js";
+import { biddingRouter } from "./routes/bidding.js";
+import { attachWebSocketServer } from "./ws/server.js";
+
 
 
 const PORT = Number(process.env.PORT || 8000);
@@ -14,6 +19,10 @@ app.use(express.json());
 app.use('/productlist', productListRouter);
 app.use('/product', productRouter);
 app.use('/bid', biddingRouter);
+
+const { broadcastHighestBid } = attachWebSocketServer(server);
+app.locals.broadcastHighestBid = broadcastHighestBid;
+
 
 server.listen(PORT, HOST, () => {
 

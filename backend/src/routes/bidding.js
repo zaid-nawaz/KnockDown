@@ -90,6 +90,12 @@ biddingRouter.post("/", async (req, res) => {
             },
         });
 
+        if(res.app.locals.broadcastHighestBid){
+            res.app.locals.broadcastHighestBid(productId ,newBid);
+        }
+
+
+
         res.status(201).json({
             success: true,
             message: "Bid placed successfully",
