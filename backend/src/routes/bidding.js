@@ -18,15 +18,30 @@ Expected body:
 */
 biddingRouter.post("/", async (req, res) => {
     try {
-        const { productId, bidderId, amount } = req.body;
+        const { productId, clerkUserId, amount } = req.body;
 
         // Basic validation
-        if (!productId || !bidderId || !amount) {
+        if (!productId || !clerkUserId || !amount) {
             return res.status(400).json({
                 success: false,
                 message: "Missing required fields",
             });
         }
+
+        const dbUser = await prisma.user.findUnique({
+            where : {
+                clerkUserId : clerkUserId
+            }
+        })
+
+        if (!dbUser) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        });
+        }
+
+        const bidderId = dbUser.id;
 
         // Find product
         const product = await prisma.product.findUnique({
@@ -88,6 +103,9 @@ biddingRouter.post("/", async (req, res) => {
                 bidderId,
                 productId,
             },
+            include : {
+                bidder : true
+            }
         });
 
         if(res.app.locals.broadcastHighestBid){

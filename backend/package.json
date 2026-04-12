@@ -11,9 +11,12 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^6.6.0",
+    "@clerk/express": "^2.1.0",
     "@prisma/adapter-neon": "^7.7.0",
     "@prisma/client": "^7.6.0",
     "@types/pg": "^8.20.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
     "pg": "^8.20.0",

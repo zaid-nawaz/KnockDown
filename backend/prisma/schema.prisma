@@ -14,11 +14,17 @@ datasource db {
 
 model User {
   id             Int       @id @default(autoincrement())
-  username       String    @unique
+
+  clerkUserId    String    @unique 
   email          String    @unique
-  password       String
+
+  first_name     String?
+  last_name      String?
+  imageUrl       String?
+
   listedProducts Product[] @relation("listedProducts")
   bids           Bid[]
+
   createdAt      DateTime  @default(now())
 }
 

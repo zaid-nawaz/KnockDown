@@ -1,23 +1,31 @@
 import "dotenv/config";
-import { PrismaClient } from '@prisma/client';
-import { PrismaNeon } from '@prisma/adapter-neon';
-import { neon } from '@neondatabase/serverless';
+import { PrismaClient } from "@prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
+// ✅ Ensure env is loaded properly
 const connectionString = process.env.DATABASE_URL;
 
-const sql = neon(connectionString);
-const adapter = new PrismaNeon(sql);
+if (!connectionString) {
+  throw new Error("❌ DATABASE_URL is not defined. Check your .env file.");
+}
 
-const prismaClientSingleton = () => {
-    return new PrismaClient({
-        adapter,
-    });
-};
+// ✅ Correct adapter usage
+const adapter = new PrismaNeon({
+  connectionString,
+});
 
-const prisma = globalThis.prisma ?? prismaClientSingleton();
+// ✅ Singleton pattern (prevents multiple instances in dev)
+const globalForPrisma = globalThis;
+
+const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    adapter,
+  });
+
+// ✅ Store in global (only in dev)
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;
-
-if (process.env.NODE_ENV !== 'production') {
-    globalThis.prisma = prisma;
-}
