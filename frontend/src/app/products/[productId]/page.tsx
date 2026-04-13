@@ -21,7 +21,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
   if (!productId) return;
 
-  const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+  const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/ws`);
 
   ws.onopen = () => {
     console.log("Connected to WebSocket");
@@ -65,7 +65,7 @@ export default function ProductDetailPage() {
   const fetchProduct = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8000/product/${productId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/product/${productId}`,
         {
             withCredentials : true
         }
@@ -94,7 +94,7 @@ export default function ProductDetailPage() {
     try {
       setLoading(true);
 
-      await axios.post("http://127.0.0.1:8000/bid", {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/bid`, {
         productId: Number(productId),
         clerkUserId : clerkUserId,
         amount: Number(bidAmount),
@@ -116,7 +116,7 @@ export default function ProductDetailPage() {
   if (!product) {
     return <p className="text-center mt-10 text-white">Loading...</p>;
   }
-  
+
   const isExpired = new Date() > new Date(product.deadline);
   return (
     <div className="min-h-screen bg-black text-white p-10">

@@ -14,7 +14,7 @@ export default function ProductsPage() {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://127.0.0.1:8000/productlist?search=${search}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/productlist?search=${search}`,
         {
             withCredentials : true
         }

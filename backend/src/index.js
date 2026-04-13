@@ -10,7 +10,6 @@ import prisma from "./lib/db.js";
 import cors from "cors";
 
 const PORT = Number(process.env.PORT || 8000);
-const HOST = process.env.HOST || '0.0.0.0';
 
 const app = express();
 const server = http.createServer(app);
@@ -84,11 +83,7 @@ app.locals.broadcastHighestBid = broadcastHighestBid;
 
 
 server.listen(PORT, HOST, () => {
-
-    const baseUrl = HOST === '0.0.0.0' ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
-
-    console.log(`Server is running on ${baseUrl}`)
-    console.log(`websocket server is running on ${baseUrl.replace('http','ws')}/ws`);
+  console.log(`Server running on port ${PORT}`);
 })
 
 // ngrok http --url=https://endosporously-cozies-jannette.ngrok-free.dev 8000

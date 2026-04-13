@@ -33,12 +33,13 @@ export default function ListProductPage() {
     setImageUploading(true);
 
     const data = new FormData();
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
     data.append("file", file);
-    data.append("upload_preset", "knockdown");
+    data.append("upload_preset", uploadPreset!);
 
     try {   
         const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/dgyu8dwzd/image/upload",
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
         data
         );
 
@@ -63,7 +64,7 @@ export default function ListProductPage() {
     setMessage("");
 
     try { 
-      const res = await axios.post("http://127.0.0.1:8000/product", {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/product`, {
         ...form,
         startingPrice: Number(form.startingPrice),
         deadline : new Date(form.deadline),
