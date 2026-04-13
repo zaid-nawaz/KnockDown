@@ -83,7 +83,7 @@ app.locals.broadcastHighestBid = broadcastHighestBid;
 
 
 
-server.listen(PORT, HOST, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
 
