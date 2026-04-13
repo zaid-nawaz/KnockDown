@@ -67,7 +67,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://knockdown.vercel.app"
+    "https://knockdown-three.vercel.app"
   ],
   credentials: true,
 }));
@@ -87,4 +87,3 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })
 
-// ngrok http --url=https://endosporously-cozies-jannette.ngrok-free.dev 8000
