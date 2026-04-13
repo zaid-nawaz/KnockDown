@@ -14,7 +14,6 @@ export default function ListProductPage() {
     imageUrl: "",
     startingPrice: "",
     deadline: ""
-    // sellerId: "",
   });
 
   const { user } = useUser();
@@ -27,8 +26,8 @@ export default function ListProductPage() {
   const [message, setMessage] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
 
-    const handleImageUpload = async (e : any) => {
-    const file = e.target.files[0];
+    const handleImageUpload = async (e : React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setImageUploading(true);
@@ -54,20 +53,19 @@ export default function ListProductPage() {
     }
     };
 
-  const handleChange = (e : any) => {
+  const handleChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e : any) => {
+  const handleSubmit = async (e : React.SyntheticEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
-    try {
+    try { 
       const res = await axios.post("http://127.0.0.1:8000/product", {
         ...form,
         startingPrice: Number(form.startingPrice),
-        // sellerId: Number(form.sellerId),
         deadline : new Date(form.deadline),
         clerkUserId : clerkUserId
       }, 
@@ -76,7 +74,7 @@ export default function ListProductPage() {
     });
 
       if (res.data.success) {
-        setMessage("✅ Product listed successfully!");
+        setMessage("Product listed successfully!");
         setForm({
           name: "",
           description: "",
@@ -89,7 +87,7 @@ export default function ListProductPage() {
       }
     } catch (err) {
       console.error(err);
-      setMessage("❌ Failed to list product");
+      setMessage("Failed to list product");
     } finally {
       setLoading(false);
     }

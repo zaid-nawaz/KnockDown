@@ -17,19 +17,15 @@ export default function ProductDetailPage() {
   const { user } = useUser();
   const clerkUserId = user?.id;
 
-  const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
   if (!productId) return;
 
   const ws = new WebSocket("ws://127.0.0.1:8000/ws");
 
-  wsRef.current = ws;
-
   ws.onopen = () => {
-    console.log("✅ Connected to WebSocket");
+    console.log("Connected to WebSocket");
 
-    // optional: subscribe to specific product
     ws.send(
       JSON.stringify({
         type: "subscribe",
@@ -41,7 +37,7 @@ export default function ProductDetailPage() {
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    console.log("📩 WS message:", data);
+    console.log("WS message:", data);
 
     if(data.type === "new_bid"){
         const bid_data = data.data;
@@ -57,15 +53,15 @@ export default function ProductDetailPage() {
   };
 
   ws.onclose = () => {
-    console.log("❌ WebSocket disconnected");
+    console.log("WebSocket disconnected");
   };
 
   return () => {
-    ws.close(); // cleanup
+    ws.close(); 
   };
 }, [productId]);
 
-  // fetch product
+  
   const fetchProduct = async () => {
     try {
       const res = await axios.get(
@@ -76,7 +72,6 @@ export default function ProductDetailPage() {
       );
 
       setProduct(res.data.product);
-      const bids = res.data.product.bids;
 
       setHighestBid(res.data.product.bids[0] || null);
 
@@ -89,18 +84,19 @@ export default function ProductDetailPage() {
     if (productId) fetchProduct();
   }, [productId]);
 
-  // place bid
-  const handleBid = async () => {
-      console.log("checking", productId, clerkUserId, bidAmount);
-    if (!bidAmount) return;
 
+
+
+  const handleBid = async () => {
+
+    if (!bidAmount) return;
 
     try {
       setLoading(true);
 
       await axios.post("http://127.0.0.1:8000/bid", {
         productId: Number(productId),
-        clerkUserId : clerkUserId, // TODO: replace with Clerk user
+        clerkUserId : clerkUserId,
         amount: Number(bidAmount),
       },
     {
@@ -120,7 +116,8 @@ export default function ProductDetailPage() {
   if (!product) {
     return <p className="text-center mt-10 text-white">Loading...</p>;
   }
-
+  
+  const isExpired = new Date() > new Date(product.deadline);
   return (
     <div className="min-h-screen bg-black text-white p-10">
       <div className="max-w-4xl mx-auto">
@@ -140,11 +137,15 @@ export default function ProductDetailPage() {
           Sold by: {product.seller?.first_name} {product.seller?.last_name}
         </p>
 
+        <p className="text-gray-400 mb-4">
+        auction deadline - {new Date(product.deadline).toLocaleString()}
+        </p>
+
         <p className="text-gray-300 mb-6">
           {product.description}
         </p>
 
-        {/* Highest Bid */}
+        
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
           <h2 className="text-xl font-semibold mb-2">Current Highest Bid</h2>
 
@@ -164,7 +165,31 @@ export default function ProductDetailPage() {
           )}
         </div>
 
-        {/* Bid Input */}
+        {
+          isExpired ? (
+              <div className="bg-red-500/10 border border-red-500 rounded-xl p-6 text-center">
+              <h2 className="text-2xl font-bold text-red-400 mb-2">
+                Auction Ended
+              </h2>
+
+              {highestBid ? (
+                <div>
+                  <p className="text-lg">
+                    Winner:{" "}
+                    <span className="font-semibold">
+                      {highestBid.bidder?.first_name} {highestBid.bidder?.last_name}
+                    </span>
+                  </p>
+
+                  <p className="text-green-400 text-xl mt-2">
+                    Final Price: ₹{highestBid.amount}
+                  </p>
+                </div>
+              ) : (
+                <p>No bids were placed</p>
+              )}
+            </div>
+          ) : (
         <div className="flex gap-3">
           <input
             type="number"
@@ -182,6 +207,9 @@ export default function ProductDetailPage() {
             {loading ? "Bidding..." : "Place Bid"}
           </button>
         </div>
+          )
+        }
+
       </div>
     </div>
   );

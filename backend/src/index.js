@@ -9,8 +9,6 @@ import { verifyWebhook } from "@clerk/express/webhooks";
 import prisma from "./lib/db.js";
 import cors from "cors";
 
-console.log('DB URL:', process.env.DATABASE_URL);
-
 const PORT = Number(process.env.PORT || 8000);
 const HOST = process.env.HOST || '0.0.0.0';
 
@@ -46,7 +44,7 @@ app.post('/api/webhooks', express.raw({ type : 'application/json' }), async (req
       }
     })
 
-    console.log('✅ User created:', NewUser);
+    console.log('User created:', NewUser);
     }
 
     else if(evt.type === 'user.deleted'){
@@ -54,10 +52,8 @@ app.post('/api/webhooks', express.raw({ type : 'application/json' }), async (req
     const deletedUser = await prisma.user.deleteMany({
       where: { clerkUserId },
     })
-    console.log('🗑️ User deleted:', deletedUser)
+    console.log('User deleted:', deletedUser)
     }
-
-
 
     return res.send('Webhook received')
   } catch (err) {
@@ -75,7 +71,8 @@ app.use(cors({
   ],
   credentials: true,
 }));
-//here you will create the endpoints
+
+//here are my endpoints
 app.use('/productlist', productListRouter);
 app.use('/product', productRouter);
 app.use('/bid', biddingRouter);

@@ -3,24 +3,11 @@ import prisma from "../lib/db.js";
 
 export const biddingRouter = Router();
 
-/*
-========================================
-POST /bid
-Place a bid on a product
-========================================
-Expected body:
-{
-  "productId": 5,
-  "bidderId": 2,
-  "amount": 75000
-}
-========================================
-*/
 biddingRouter.post("/", async (req, res) => {
     try {
         const { productId, clerkUserId, amount } = req.body;
 
-        // Basic validation
+       
         if (!productId || !clerkUserId || !amount) {
             return res.status(400).json({
                 success: false,
@@ -43,7 +30,7 @@ biddingRouter.post("/", async (req, res) => {
 
         const bidderId = dbUser.id;
 
-        // Find product
+        
         const product = await prisma.product.findUnique({
             where: {
                 id: productId,
@@ -64,8 +51,7 @@ biddingRouter.post("/", async (req, res) => {
                 message: "Product not found",
             });
         }
-
-        // Check if auction is active
+        
         if (!product.isActive) {
             return res.status(400).json({
                 success: false,
@@ -73,7 +59,7 @@ biddingRouter.post("/", async (req, res) => {
             });
         }
 
-        // Check if deadline passed
+       
         if (new Date() > product.deadline) {
             return res.status(400).json({
                 success: false,
@@ -81,14 +67,13 @@ biddingRouter.post("/", async (req, res) => {
             });
         }
 
-        // Get current highest bid
+        // current highest bid
         const highestBid = product.bids[0];
 
         const currentHighestAmount = highestBid
             ? highestBid.amount
             : product.startingPrice;
 
-        // Validate bid amount
         if (amount <= currentHighestAmount) {
             return res.status(400).json({
                 success: false,
@@ -96,7 +81,7 @@ biddingRouter.post("/", async (req, res) => {
             });
         }
 
-        // Create new bid
+        
         const newBid = await prisma.bid.create({
             data: {
                 amount,

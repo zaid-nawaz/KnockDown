@@ -29,7 +29,6 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-black via-gray-900 to-gray-800 text-white px-6 py-10">
-      {/* Heading */}
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -38,7 +37,6 @@ export default function ProductsPage() {
         Explore Products
       </motion.h1>
 
-      {/* Search Bar + Button */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -60,7 +58,6 @@ export default function ProductsPage() {
         </button>
       </motion.div>
 
-      {/* Results */}
       {loading ? (
         <p className="text-center text-gray-400">Loading...</p>
       ) : products.length === 0 ? (
@@ -93,7 +90,7 @@ export default function ProductsPage() {
               </p>
 
               <div className="mt-4 text-sm text-gray-400">
-                ₹{product.startingPrice}
+                starting price is - ₹{product.startingPrice}
               </div>
             </motion.div>
             </Link>

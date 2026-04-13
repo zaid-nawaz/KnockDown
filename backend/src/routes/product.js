@@ -3,12 +3,6 @@ import prisma from "../lib/db.js";
 
 export const productRouter = Router();
 
-/*
-========================================
-GET /product/:id
-Fetch one product by ID
-========================================
-*/
 productRouter.get("/:id", async (req, res) => {
     try {
         const productId = parseInt(req.params.id);
@@ -59,12 +53,6 @@ productRouter.get("/:id", async (req, res) => {
 });
 
 
-/*
-========================================
-POST /product
-Create new product
-========================================
-*/
 productRouter.post("/", async (req, res) => {
     try {
         const {
@@ -76,7 +64,7 @@ productRouter.post("/", async (req, res) => {
             clerkUserId
         } = req.body;
 
-        // Basic validation
+        
         if (!name || !startingPrice || !deadline || !clerkUserId) {
             return res.status(400).json({
                 success: false,
