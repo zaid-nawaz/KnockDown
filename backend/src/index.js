@@ -14,6 +14,10 @@ const PORT = Number(process.env.PORT || 8000);
 const app = express();
 const server = http.createServer(app);
 
+app.get("/ping", (req, res) => {
+  res.send("ok");
+});
+
 app.post('/api/webhooks', express.raw({ type : 'application/json' }), async (req, res) => {
   try {
     const evt = await verifyWebhook(req)
@@ -76,6 +80,8 @@ app.use(cors({
 app.use('/productlist', productListRouter);
 app.use('/product', productRouter);
 app.use('/bid', biddingRouter);
+
+
 
 const { broadcastHighestBid } = attachWebSocketServer(server);
 app.locals.broadcastHighestBid = broadcastHighestBid;
